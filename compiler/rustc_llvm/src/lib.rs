@@ -149,6 +149,14 @@ pub fn initialize_available_targets() {
         LLVMInitializeRISCVAsmParser
     );
     init_target!(
+        llvm_component = "cramp",
+        LLVMInitializeCrampTargetInfo,
+        LLVMInitializeCrampTarget,
+        LLVMInitializeCrampTargetMC,
+        LLVMInitializeCrampAsmPrinter,
+        LLVMInitializeCrampAsmParser
+    );
+    init_target!(
         llvm_component = "sparc",
         LLVMInitializeSparcTargetInfo,
         LLVMInitializeSparcTarget,

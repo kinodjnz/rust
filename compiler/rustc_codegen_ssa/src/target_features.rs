@@ -249,6 +249,39 @@ const RISCV_ALLOWED_FEATURES: &[(&str, Option<Symbol>)] = &[
     ("zkt", Some(sym::riscv_target_feature)),
 ];
 
+const CRAMP_ALLOWED_FEATURES: &[(&str, Option<Symbol>)] = &[
+    ("m", Some(sym::cramp_target_feature)),
+    ("a", Some(sym::cramp_target_feature)),
+    ("c", Some(sym::cramp_target_feature)),
+    ("f", Some(sym::cramp_target_feature)),
+    ("d", Some(sym::cramp_target_feature)),
+    ("e", Some(sym::cramp_target_feature)),
+    ("v", Some(sym::cramp_target_feature)),
+    ("zfinx", Some(sym::cramp_target_feature)),
+    ("zdinx", Some(sym::cramp_target_feature)),
+    ("zhinx", Some(sym::cramp_target_feature)),
+    ("zhinxmin", Some(sym::cramp_target_feature)),
+    ("zfh", Some(sym::cramp_target_feature)),
+    ("zfhmin", Some(sym::cramp_target_feature)),
+    ("zba", Some(sym::cramp_target_feature)),
+    ("zbb", Some(sym::cramp_target_feature)),
+    ("zbc", Some(sym::cramp_target_feature)),
+    ("zbs", Some(sym::cramp_target_feature)),
+    ("zbkb", Some(sym::cramp_target_feature)),
+    ("zbkc", Some(sym::cramp_target_feature)),
+    ("zbkx", Some(sym::cramp_target_feature)),
+    ("zknd", Some(sym::cramp_target_feature)),
+    ("zkne", Some(sym::cramp_target_feature)),
+    ("zknh", Some(sym::cramp_target_feature)),
+    ("zksed", Some(sym::cramp_target_feature)),
+    ("zksh", Some(sym::cramp_target_feature)),
+    ("zkr", Some(sym::cramp_target_feature)),
+    ("zkn", Some(sym::cramp_target_feature)),
+    ("zks", Some(sym::cramp_target_feature)),
+    ("zk", Some(sym::cramp_target_feature)),
+    ("zkt", Some(sym::cramp_target_feature)),
+];
+
 const WASM_ALLOWED_FEATURES: &[(&str, Option<Symbol>)] = &[
     ("simd128", None),
     ("atomics", Some(sym::wasm_target_feature)),
@@ -274,6 +307,7 @@ pub fn all_known_features() -> impl Iterator<Item = (&'static str, Option<Symbol
         .chain(POWERPC_ALLOWED_FEATURES.iter())
         .chain(MIPS_ALLOWED_FEATURES.iter())
         .chain(RISCV_ALLOWED_FEATURES.iter())
+        .chain(CRAMP_ALLOWED_FEATURES.iter())
         .chain(WASM_ALLOWED_FEATURES.iter())
         .chain(BPF_ALLOWED_FEATURES.iter())
         .cloned()
@@ -288,6 +322,7 @@ pub fn supported_target_features(sess: &Session) -> &'static [(&'static str, Opt
         "mips" | "mips64" => MIPS_ALLOWED_FEATURES,
         "powerpc" | "powerpc64" => POWERPC_ALLOWED_FEATURES,
         "riscv32" | "riscv64" => RISCV_ALLOWED_FEATURES,
+        "cramp32" | "cramp64" => CRAMP_ALLOWED_FEATURES,
         "wasm32" | "wasm64" => WASM_ALLOWED_FEATURES,
         "bpf" => BPF_ALLOWED_FEATURES,
         _ => &[],

@@ -9,6 +9,7 @@ mod amdgpu;
 mod arm;
 mod avr;
 mod bpf;
+mod cramp;
 mod hexagon;
 mod m68k;
 mod mips;
@@ -714,6 +715,7 @@ impl<'a, Ty> FnAbi<'a, Ty> {
             }
             "hexagon" => hexagon::compute_abi_info(self),
             "riscv32" | "riscv64" => riscv::compute_abi_info(cx, self),
+            "cramp32" | "cramp64" => cramp::compute_abi_info(cx, self),
             "wasm32" | "wasm64" => {
                 if cx.target_spec().adjust_abi(abi) == spec::abi::Abi::Wasm {
                     wasm::compute_wasm_abi_info(self)

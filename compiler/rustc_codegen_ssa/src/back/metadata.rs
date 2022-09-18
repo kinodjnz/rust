@@ -116,6 +116,8 @@ pub(crate) fn create_object_file(sess: &Session) -> Option<write::Object<'static
         "powerpc64" => Architecture::PowerPc64,
         "riscv32" => Architecture::Riscv32,
         "riscv64" => Architecture::Riscv64,
+        "cramp32" => Architecture::Riscv32, // TODO object rs cramp support
+        "cramp64" => Architecture::Riscv64, // TODO object rs cramp support
         "sparc64" => Architecture::Sparc64,
         // Unsupported architecture.
         _ => return None,

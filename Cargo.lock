@@ -767,8 +767,7 @@ dependencies = [
 [[package]]
 name = "compiler_builtins"
 version = "0.1.79"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4f873ce2bd3550b0b565f878b3d04ea8253f4259dc3d20223af2e1ba86f5ecca"
+source = "git+https://github.com/kinodjnz/compiler-builtins?rev=bc7c1caafaeefe57a5f6d108b2354e0edd01ec98#bc7c1caafaeefe57a5f6d108b2354e0edd01ec98"
 dependencies = [
  "cc",
  "rustc-std-workspace-core",
@@ -2336,8 +2335,7 @@ dependencies = [
 [[package]]
 name = "object"
 version = "0.29.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "21158b2c33aa6d4561f1c0a6ea283ca92bc54802a93b263e910746d679a7eb53"
+source = "git+https://github.com/kinodjnz/object?rev=b717a1e31fb10bbff0f0e1248e8e8b1d451949bf#b717a1e31fb10bbff0f0e1248e8e8b1d451949bf"
 dependencies = [
  "crc32fast",
  "flate2",

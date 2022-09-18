@@ -221,6 +221,7 @@ impl<'ll, 'tcx> AsmBuilderMethods<'tcx> for Builder<'_, 'll, 'tcx> {
                         "~{vxrm}".to_string(),
                     ]);
                 }
+                InlineAsmArch::Cramp32 | InlineAsmArch::Cramp64 => {}
                 InlineAsmArch::Avr => {
                     constraints.push("~{sreg}".to_string());
                 }
@@ -585,6 +586,11 @@ fn reg_to_llvm(reg: InlineAsmRegOrRegClass, layout: Option<&TyAndLayout<'_>>) ->
             InlineAsmRegClass::RiscV(RiscVInlineAsmRegClass::vreg) => {
                 unreachable!("clobber-only")
             }
+            InlineAsmRegClass::Cramp(CrampInlineAsmRegClass::reg) => "r",
+            InlineAsmRegClass::Cramp(CrampInlineAsmRegClass::freg) => "f",
+            InlineAsmRegClass::Cramp(CrampInlineAsmRegClass::vreg) => {
+                unreachable!("clobber-only")
+            }
             InlineAsmRegClass::X86(X86InlineAsmRegClass::reg) => "r",
             InlineAsmRegClass::X86(X86InlineAsmRegClass::reg_abcd) => "Q",
             InlineAsmRegClass::X86(X86InlineAsmRegClass::reg_byte) => "q",
@@ -655,6 +661,11 @@ fn modifier_to_llvm(
         InlineAsmRegClass::RiscV(RiscVInlineAsmRegClass::reg)
         | InlineAsmRegClass::RiscV(RiscVInlineAsmRegClass::freg) => None,
         InlineAsmRegClass::RiscV(RiscVInlineAsmRegClass::vreg) => {
+            unreachable!("clobber-only")
+        }
+        InlineAsmRegClass::Cramp(CrampInlineAsmRegClass::reg)
+        | InlineAsmRegClass::Cramp(CrampInlineAsmRegClass::freg) => None,
+        InlineAsmRegClass::Cramp(CrampInlineAsmRegClass::vreg) => {
             unreachable!("clobber-only")
         }
         InlineAsmRegClass::X86(X86InlineAsmRegClass::reg)
@@ -747,6 +758,11 @@ fn dummy_output_type<'ll>(cx: &CodegenCx<'ll, '_>, reg: InlineAsmRegClass) -> &'
         InlineAsmRegClass::RiscV(RiscVInlineAsmRegClass::reg) => cx.type_i32(),
         InlineAsmRegClass::RiscV(RiscVInlineAsmRegClass::freg) => cx.type_f32(),
         InlineAsmRegClass::RiscV(RiscVInlineAsmRegClass::vreg) => {
+            unreachable!("clobber-only")
+        }
+        InlineAsmRegClass::Cramp(CrampInlineAsmRegClass::reg) => cx.type_i32(),
+        InlineAsmRegClass::Cramp(CrampInlineAsmRegClass::freg) => cx.type_f32(),
+        InlineAsmRegClass::Cramp(CrampInlineAsmRegClass::vreg) => {
             unreachable!("clobber-only")
         }
         InlineAsmRegClass::X86(X86InlineAsmRegClass::reg)

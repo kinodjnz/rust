@@ -166,6 +166,7 @@ mod aarch64;
 mod arm;
 mod avr;
 mod bpf;
+mod cramp;
 mod hexagon;
 mod mips;
 mod msp430;
@@ -187,6 +188,7 @@ pub use msp430::{Msp430InlineAsmReg, Msp430InlineAsmRegClass};
 pub use nvptx::{NvptxInlineAsmReg, NvptxInlineAsmRegClass};
 pub use powerpc::{PowerPCInlineAsmReg, PowerPCInlineAsmRegClass};
 pub use riscv::{RiscVInlineAsmReg, RiscVInlineAsmRegClass};
+pub use cramp::{CrampInlineAsmReg, CrampInlineAsmRegClass};
 pub use s390x::{S390xInlineAsmReg, S390xInlineAsmRegClass};
 pub use spirv::{SpirVInlineAsmReg, SpirVInlineAsmRegClass};
 pub use wasm::{WasmInlineAsmReg, WasmInlineAsmRegClass};
@@ -200,6 +202,8 @@ pub enum InlineAsmArch {
     AArch64,
     RiscV32,
     RiscV64,
+    Cramp32,
+    Cramp64,
     Nvptx64,
     Hexagon,
     Mips,
@@ -226,6 +230,8 @@ impl FromStr for InlineAsmArch {
             "aarch64" => Ok(Self::AArch64),
             "riscv32" => Ok(Self::RiscV32),
             "riscv64" => Ok(Self::RiscV64),
+            "cramp32" => Ok(Self::Cramp32),
+            "cramp64" => Ok(Self::Cramp64),
             "nvptx64" => Ok(Self::Nvptx64),
             "powerpc" => Ok(Self::PowerPC),
             "powerpc64" => Ok(Self::PowerPC64),
@@ -251,6 +257,7 @@ pub enum InlineAsmReg {
     Arm(ArmInlineAsmReg),
     AArch64(AArch64InlineAsmReg),
     RiscV(RiscVInlineAsmReg),
+    Cramp(CrampInlineAsmReg),
     Nvptx(NvptxInlineAsmReg),
     PowerPC(PowerPCInlineAsmReg),
     Hexagon(HexagonInlineAsmReg),
@@ -272,6 +279,7 @@ impl InlineAsmReg {
             Self::Arm(r) => r.name(),
             Self::AArch64(r) => r.name(),
             Self::RiscV(r) => r.name(),
+            Self::Cramp(r) => r.name(),
             Self::PowerPC(r) => r.name(),
             Self::Hexagon(r) => r.name(),
             Self::Mips(r) => r.name(),
@@ -289,6 +297,7 @@ impl InlineAsmReg {
             Self::Arm(r) => InlineAsmRegClass::Arm(r.reg_class()),
             Self::AArch64(r) => InlineAsmRegClass::AArch64(r.reg_class()),
             Self::RiscV(r) => InlineAsmRegClass::RiscV(r.reg_class()),
+            Self::Cramp(r) => InlineAsmRegClass::Cramp(r.reg_class()),
             Self::PowerPC(r) => InlineAsmRegClass::PowerPC(r.reg_class()),
             Self::Hexagon(r) => InlineAsmRegClass::Hexagon(r.reg_class()),
             Self::Mips(r) => InlineAsmRegClass::Mips(r.reg_class()),
@@ -310,6 +319,9 @@ impl InlineAsmReg {
             InlineAsmArch::AArch64 => Self::AArch64(AArch64InlineAsmReg::parse(name)?),
             InlineAsmArch::RiscV32 | InlineAsmArch::RiscV64 => {
                 Self::RiscV(RiscVInlineAsmReg::parse(name)?)
+            }
+            InlineAsmArch::Cramp32 | InlineAsmArch::Cramp64 => {
+                Self::Cramp(CrampInlineAsmReg::parse(name)?)
             }
             InlineAsmArch::Nvptx64 => Self::Nvptx(NvptxInlineAsmReg::parse(name)?),
             InlineAsmArch::PowerPC | InlineAsmArch::PowerPC64 => {
@@ -343,6 +355,7 @@ impl InlineAsmReg {
             Self::Arm(r) => r.validate(arch, reloc_model, target_features, target, is_clobber),
             Self::AArch64(r) => r.validate(arch, reloc_model, target_features, target, is_clobber),
             Self::RiscV(r) => r.validate(arch, reloc_model, target_features, target, is_clobber),
+            Self::Cramp(r) => r.validate(arch, reloc_model, target_features, target, is_clobber),
             Self::PowerPC(r) => r.validate(arch, reloc_model, target_features, target, is_clobber),
             Self::Hexagon(r) => r.validate(arch, reloc_model, target_features, target, is_clobber),
             Self::Mips(r) => r.validate(arch, reloc_model, target_features, target, is_clobber),
@@ -367,6 +380,7 @@ impl InlineAsmReg {
             Self::Arm(r) => r.emit(out, arch, modifier),
             Self::AArch64(r) => r.emit(out, arch, modifier),
             Self::RiscV(r) => r.emit(out, arch, modifier),
+            Self::Cramp(r) => r.emit(out, arch, modifier),
             Self::PowerPC(r) => r.emit(out, arch, modifier),
             Self::Hexagon(r) => r.emit(out, arch, modifier),
             Self::Mips(r) => r.emit(out, arch, modifier),
@@ -384,6 +398,7 @@ impl InlineAsmReg {
             Self::Arm(r) => r.overlapping_regs(|r| cb(Self::Arm(r))),
             Self::AArch64(_) => cb(self),
             Self::RiscV(_) => cb(self),
+            Self::Cramp(_) => cb(self),
             Self::PowerPC(r) => r.overlapping_regs(|r| cb(Self::PowerPC(r))),
             Self::Hexagon(r) => r.overlapping_regs(|r| cb(Self::Hexagon(r))),
             Self::Mips(_) => cb(self),
@@ -403,6 +418,7 @@ pub enum InlineAsmRegClass {
     Arm(ArmInlineAsmRegClass),
     AArch64(AArch64InlineAsmRegClass),
     RiscV(RiscVInlineAsmRegClass),
+    Cramp(CrampInlineAsmRegClass),
     Nvptx(NvptxInlineAsmRegClass),
     PowerPC(PowerPCInlineAsmRegClass),
     Hexagon(HexagonInlineAsmRegClass),
@@ -424,6 +440,7 @@ impl InlineAsmRegClass {
             Self::Arm(r) => r.name(),
             Self::AArch64(r) => r.name(),
             Self::RiscV(r) => r.name(),
+            Self::Cramp(r) => r.name(),
             Self::Nvptx(r) => r.name(),
             Self::PowerPC(r) => r.name(),
             Self::Hexagon(r) => r.name(),
@@ -447,6 +464,7 @@ impl InlineAsmRegClass {
             Self::Arm(r) => r.suggest_class(arch, ty).map(InlineAsmRegClass::Arm),
             Self::AArch64(r) => r.suggest_class(arch, ty).map(InlineAsmRegClass::AArch64),
             Self::RiscV(r) => r.suggest_class(arch, ty).map(InlineAsmRegClass::RiscV),
+            Self::Cramp(r) => r.suggest_class(arch, ty).map(InlineAsmRegClass::Cramp),
             Self::Nvptx(r) => r.suggest_class(arch, ty).map(InlineAsmRegClass::Nvptx),
             Self::PowerPC(r) => r.suggest_class(arch, ty).map(InlineAsmRegClass::PowerPC),
             Self::Hexagon(r) => r.suggest_class(arch, ty).map(InlineAsmRegClass::Hexagon),
@@ -477,6 +495,7 @@ impl InlineAsmRegClass {
             Self::Arm(r) => r.suggest_modifier(arch, ty),
             Self::AArch64(r) => r.suggest_modifier(arch, ty),
             Self::RiscV(r) => r.suggest_modifier(arch, ty),
+            Self::Cramp(r) => r.suggest_modifier(arch, ty),
             Self::Nvptx(r) => r.suggest_modifier(arch, ty),
             Self::PowerPC(r) => r.suggest_modifier(arch, ty),
             Self::Hexagon(r) => r.suggest_modifier(arch, ty),
@@ -503,6 +522,7 @@ impl InlineAsmRegClass {
             Self::Arm(r) => r.default_modifier(arch),
             Self::AArch64(r) => r.default_modifier(arch),
             Self::RiscV(r) => r.default_modifier(arch),
+            Self::Cramp(r) => r.default_modifier(arch),
             Self::Nvptx(r) => r.default_modifier(arch),
             Self::PowerPC(r) => r.default_modifier(arch),
             Self::Hexagon(r) => r.default_modifier(arch),
@@ -528,6 +548,7 @@ impl InlineAsmRegClass {
             Self::Arm(r) => r.supported_types(arch),
             Self::AArch64(r) => r.supported_types(arch),
             Self::RiscV(r) => r.supported_types(arch),
+            Self::Cramp(r) => r.supported_types(arch),
             Self::Nvptx(r) => r.supported_types(arch),
             Self::PowerPC(r) => r.supported_types(arch),
             Self::Hexagon(r) => r.supported_types(arch),
@@ -551,6 +572,9 @@ impl InlineAsmRegClass {
             InlineAsmArch::AArch64 => Self::AArch64(AArch64InlineAsmRegClass::parse(name)?),
             InlineAsmArch::RiscV32 | InlineAsmArch::RiscV64 => {
                 Self::RiscV(RiscVInlineAsmRegClass::parse(name)?)
+            }
+            InlineAsmArch::Cramp32 | InlineAsmArch::Cramp64 => {
+                Self::Cramp(CrampInlineAsmRegClass::parse(name)?)
             }
             InlineAsmArch::Nvptx64 => Self::Nvptx(NvptxInlineAsmRegClass::parse(name)?),
             InlineAsmArch::PowerPC | InlineAsmArch::PowerPC64 => {
@@ -579,6 +603,7 @@ impl InlineAsmRegClass {
             Self::Arm(r) => r.valid_modifiers(arch),
             Self::AArch64(r) => r.valid_modifiers(arch),
             Self::RiscV(r) => r.valid_modifiers(arch),
+            Self::Cramp(r) => r.valid_modifiers(arch),
             Self::Nvptx(r) => r.valid_modifiers(arch),
             Self::PowerPC(r) => r.valid_modifiers(arch),
             Self::Hexagon(r) => r.valid_modifiers(arch),
@@ -725,6 +750,11 @@ pub fn allocatable_registers(
             riscv::fill_reg_map(arch, reloc_model, target_features, target, &mut map);
             map
         }
+        InlineAsmArch::Cramp32 | InlineAsmArch::Cramp64 => {
+            let mut map = cramp::regclass_map();
+            cramp::fill_reg_map(arch, reloc_model, target_features, target, &mut map);
+            map
+        }
         InlineAsmArch::Nvptx64 => {
             let mut map = nvptx::regclass_map();
             nvptx::fill_reg_map(arch, reloc_model, target_features, target, &mut map);
@@ -788,6 +818,7 @@ pub enum InlineAsmClobberAbi {
     AArch64,
     AArch64NoX18,
     RiscV,
+    Cramp,
 }
 
 impl InlineAsmClobberAbi {
@@ -827,6 +858,10 @@ impl InlineAsmClobberAbi {
             },
             InlineAsmArch::RiscV32 | InlineAsmArch::RiscV64 => match name {
                 "C" | "system" | "efiapi" => Ok(InlineAsmClobberAbi::RiscV),
+                _ => Err(&["C", "system", "efiapi"]),
+            },
+            InlineAsmArch::Cramp32 | InlineAsmArch::Cramp64 => match name {
+                "C" | "system" | "efiapi" => Ok(InlineAsmClobberAbi::Cramp),
                 _ => Err(&["C", "system", "efiapi"]),
             },
             _ => Err(&[]),
@@ -950,6 +985,29 @@ impl InlineAsmClobberAbi {
             },
             InlineAsmClobberAbi::RiscV => clobbered_regs! {
                 RiscV RiscVInlineAsmReg {
+                    // ra
+                    x1,
+                    // t0-t2
+                    x5, x6, x7,
+                    // a0-a7
+                    x10, x11, x12, x13, x14, x15, x16, x17,
+                    // t3-t6
+                    x28, x29, x30, x31,
+                    // ft0-ft7
+                    f0, f1, f2, f3, f4, f5, f6, f7,
+                    // fa0-fa7
+                    f10, f11, f12, f13, f14, f15, f16, f17,
+                    // ft8-ft11
+                    f28, f29, f30, f31,
+
+                    v0, v1, v2, v3, v4, v5, v6, v7,
+                    v8, v9, v10, v11, v12, v13, v14, v15,
+                    v16, v17, v18, v19, v20, v21, v22, v23,
+                    v24, v25, v26, v27, v28, v29, v30, v31,
+                }
+            },
+            InlineAsmClobberAbi::Cramp => clobbered_regs! {
+                Cramp CrampInlineAsmReg {
                     // ra
                     x1,
                     // t0-t2

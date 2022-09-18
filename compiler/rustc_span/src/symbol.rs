@@ -563,6 +563,7 @@ symbols! {
         cosf64,
         count,
         cr,
+        cramp_target_feature,
         crate_id,
         crate_in_paths,
         crate_local,

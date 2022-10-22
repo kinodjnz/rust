@@ -14,7 +14,7 @@ pub fn target() -> Target {
             cpu: "generic-cramp32".into(),
             max_atomic_width: Some(0),
             atomic_cas: false,
-            features: "+m,+c".into(),
+            features: "+m,+c,+zbb".into(),
             panic_strategy: PanicStrategy::Abort,
             relocation_model: RelocModel::Static,
             emit_debug_gdb_scripts: false,

@@ -415,6 +415,8 @@ impl Step for Llvm {
 
         let mut enabled_llvm_projects = Vec::new();
 
+        enabled_llvm_projects.push("lld");
+
         if helpers::forcing_clang_based_tests() {
             enabled_llvm_projects.push("clang");
             enabled_llvm_projects.push("compiler-rt");

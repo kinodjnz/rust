@@ -295,6 +295,8 @@ const RISCV_ALLOWED_FEATURES: &[(&str, Stability)] = &[
     ("relax", Unstable(sym::riscv_target_feature)),
     ("unaligned-scalar-mem", Unstable(sym::riscv_target_feature)),
     ("v", Unstable(sym::riscv_target_feature)),
+    ("xcramp", Unstable(sym::riscv_target_feature)),
+    ("xnorot", Unstable(sym::riscv_target_feature)),
     ("zba", Stable),
     ("zbb", Stable),
     ("zbc", Stable),

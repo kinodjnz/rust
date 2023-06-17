@@ -253,6 +253,8 @@ const RISCV_ALLOWED_FEATURES: &[(&str, Option<Symbol>)] = &[
     ("relax", Some(sym::riscv_target_feature)),
     ("unaligned-scalar-mem", Some(sym::riscv_target_feature)),
     ("v", Some(sym::riscv_target_feature)),
+    ("xcramp", Some(sym::riscv_target_feature)),
+    ("xnorot", Some(sym::riscv_target_feature)),
     ("zba", Some(sym::riscv_target_feature)),
     ("zbb", Some(sym::riscv_target_feature)),
     ("zbc", Some(sym::riscv_target_feature)),

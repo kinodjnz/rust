@@ -767,7 +767,7 @@ dependencies = [
 [[package]]
 name = "compiler_builtins"
 version = "0.1.79"
-source = "git+https://github.com/kinodjnz/compiler-builtins?rev=bc7c1caafaeefe57a5f6d108b2354e0edd01ec98#bc7c1caafaeefe57a5f6d108b2354e0edd01ec98"
+source = "git+https://github.com/kinodjnz/compiler-builtins?rev=667c3bc449b7035dcd0c9a26de29842f1360f0df#667c3bc449b7035dcd0c9a26de29842f1360f0df"
 dependencies = [
  "cc",
  "rustc-std-workspace-core",

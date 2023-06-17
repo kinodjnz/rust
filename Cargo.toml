@@ -102,7 +102,7 @@ object.debug = 0
 # See comments in `src/tools/rustc-workspace-hack/README.md` for what's going on
 # here
 rustc-workspace-hack = { path = 'src/tools/rustc-workspace-hack' }
-compiler_builtins = { git = "https://github.com/kinodjnz/compiler-builtins", rev = "bc7c1caafaeefe57a5f6d108b2354e0edd01ec98" }
+compiler_builtins = { git = "https://github.com/kinodjnz/compiler-builtins", rev = "667c3bc449b7035dcd0c9a26de29842f1360f0df" }
 object = { git = "https://github.com/kinodjnz/object", rev = "b717a1e31fb10bbff0f0e1248e8e8b1d451949bf" }
 
 # See comments in `library/rustc-std-workspace-core/README.md` for what's going on
